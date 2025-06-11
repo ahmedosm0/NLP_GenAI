@@ -11,3 +11,9 @@ pypdf
 bs4
 arxiv
 pymupdf
+langchain_ollama
+langchain_huggingface
+sentence_transformers
+regex
+faiss-cpu # facebook ai sementic search
+langchain_chroma

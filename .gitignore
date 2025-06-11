@@ -2,3 +2,6 @@ venv
 ml_for_nlp/nltk_data/
 ml_for_nlp/.ipynb_checkpoints/
 datasets/
+faiss_index/
+chroma_db/
+.env
