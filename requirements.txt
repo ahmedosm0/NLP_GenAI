@@ -2,6 +2,7 @@ ipykernel
 nltk
 tensorflow
 scikit-learn
+python-dotenv
 
 # langchain
 langchain
@@ -12,8 +13,10 @@ bs4
 arxiv
 pymupdf
 langchain_ollama
+langchain_ollama
 langchain_huggingface
 sentence_transformers
 regex
 faiss-cpu # facebook ai sementic search
 langchain_chroma
+streamlit
