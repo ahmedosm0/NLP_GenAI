@@ -4,3 +4,4 @@ ml_for_nlp/.ipynb_checkpoints/
 datasets/
 faiss_index/
 chroma_db/
+.env
