@@ -1,75 +1,84 @@
-import os
+## RAG Q&A Conversation With PDF Including Chat History
 import streamlit as st
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_chroma import Chroma
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain, create_history_aware_retriever
-from langchain_groq import ChatGroq
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_groq import ChatGroq
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader
+import os
 
-# loading env variables
 from dotenv import load_dotenv
 load_dotenv()
 
-# callings api keys
-GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-os.environ['HF_API_KEY'] = os.getenv('HF_API_KEY')
+os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
+embeddings=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-# loading embeddings model of huggingface
-embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
 
-st.title('Conversational RAG With PDF uplaods and chat history')
+## set up Streamlit 
+st.title("Conversational RAG With PDF uplaods and chat history")
 st.write("Upload Pdf's and chat with their content")
 
-# input GROQ API KEY from user for loading GROQ model
-API_input = st.text_input("Enter GROQ API KEY', type='password'")
-if API_input:
-    llm = ChatGroq(model_name='llama-3.1-8b-instant', groq_api_key=GROQ_API_KEY)
+## Input the Groq API Key
+api_key=st.text_input("Enter your Groq API key:",type="password")
 
-# processing uploaded pdf docs
-    uploaded_files = st.file_uploader('upload PDF file', type='pdf', accept_multiple_files=True)
+## Check if groq api key is provided
+if api_key:
+    llm=ChatGroq(groq_api_key=api_key,model_name="Gemma2-9b-It")
+
+    ## chat interface
+
+    session_id=st.text_input("Session ID",value="default_session")
+    ## statefully manage chat history
+
+    if 'store' not in st.session_state:
+        st.session_state.store={}
+
+    uploaded_files=st.file_uploader("Choose A PDf file",type="pdf",accept_multiple_files=True)
+    ## Process uploaded  PDF's
     if uploaded_files:
-        documents = []
+        documents=[]
         for uploaded_file in uploaded_files:
-            temp_pdf = f"./temp.pdf"
-            with open(temp_pdf, 'wb') as f:
-                f.write(uploaded_file.getvalue())
-                file_name = uploaded_file.name
+            temppdf=f"./temp.pdf"
+            with open(temppdf,"wb") as file:
+                file.write(uploaded_file.getvalue())
+                file_name=uploaded_file.name
 
-            loader = PyPdfLoader(temp_pdf)
-            docs = loader.load()
+            loader=PyPDFLoader(temppdf)
+            docs=loader.load()
             documents.extend(docs)
 
-# split docs into chunks, and store in vector store
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        split_docs = text_splitter.split_documents(documents)
-        vector_store = Chroma.from_documents(split_docs, embeddings)
-        retriever = vector_store.as_retriever()
+    # Split and create embeddings for the documents
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=500)
+        splits = text_splitter.split_documents(documents)
+        vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
+        retriever = vectorstore.as_retriever()    
 
-# creating history aware retriever
-        contextualize_system_prompt = (
+        contextualize_q_system_prompt=(
             "Given a chat history and the latest user question"
             "which might reference context in the chat history, "
             "formulate a standalone question which can be understood "
             "without the chat history. Do NOT answer the question, "
             "just reformulate it if needed and otherwise return it as is."
         )
-        contextualize_system_prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", contextualize_system_prompt),
-                MessagesPlaceholder("chat_history"),
-                ("human", "{input}"),
-            ]
-        )
+        contextualize_q_prompt = ChatPromptTemplate.from_messages(
+                [
+                    ("system", contextualize_q_system_prompt),
+                    MessagesPlaceholder("chat_history"),
+                    ("human", "{input}"),
+                ]
+            )
         
-        history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_system_prompt)
+        history_aware_retriever=create_history_aware_retriever(llm,retriever,contextualize_q_prompt)
 
-# creating 
+        ## Answer question
+
+        # Answer question
         system_prompt = (
                 "You are an assistant for question-answering tasks. "
                 "Use the following pieces of retrieved context to answer "
@@ -79,29 +88,47 @@ if API_input:
                 "\n\n"
                 "{context}"
             )
-        
         qa_prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", system_prompt),
-                MessgagesPlaceholder('chat_history'),
-                ("human", "{input}")
-            ]
-        )
-        question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
-        rag_chin = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+                [
+                    ("system", system_prompt),
+                    MessagesPlaceholder("chat_history"),
+                    ("human", "{input}"),
+                ]
+            )
+        
+        question_answer_chain=create_stuff_documents_chain(llm,qa_prompt)
+        rag_chain=create_retrieval_chain(history_aware_retriever,question_answer_chain)
 
         def get_session_history(session_id:str)->BaseChatMessageHistory:
             if session_id not in st.session_state.store:
                 st.session_state.store[session_id]=ChatMessageHistory()
             return st.session_state.store[session_id]
-
-# converstaional rag chain
-        conversational_rag_chain = RunnableWithMessageHistory(
-            rag_chain, get_session_history,
-            input_message_key="input",
-            history_message_key="chat_history",
-            output_message_key="answer"
+        
+        conversational_rag_chain=RunnableWithMessageHistory(
+            rag_chain,get_session_history,
+            input_messages_key="input",
+            history_messages_key="chat_history",
+            output_messages_key="answer"
         )
+        
+        user_input = st.text_input("Your question:")
+        if user_input:
+            session_history=get_session_history(session_id)
+            response = conversational_rag_chain.invoke(
+                {"input": user_input},
+                config={
+                    "configurable": {"session_id":session_id}
+                },  # constructs a key "abc123" in `store`.
+            )
+            st.write(st.session_state.store)
+            st.write("Assistant:", response['answer'])
+            st.write("Chat History:", session_history.messages)
+else:
+    st.warning("Please enter the GRoq API Key")
+
+
+
+
 
 
 
