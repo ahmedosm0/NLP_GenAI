@@ -13,10 +13,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 os.environ['GROQ_API_KEY'] = os.getenv('GROQ_API_KEY')
+groq_api_key = os.getenv('GROQ_API_KEY')
 os.environ['HF_API_KEY'] = os.getenv('HF_API_KEY')
 
-llm = ChatGroq(api_key = 'GROQ_API_KEY', model = 'llama-3.1-8b-instant')
-embeddings = HuggingFaceEmbeddings(model="all-MiniLM-L6-v2")
+llm = ChatGroq(groq_api_key = groq_api_key, model_name = 'llama-3.1-8b-instant')
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 prompt = ChatPromptTemplate.from_template(
     """
@@ -37,7 +38,7 @@ def Create_Vector_Embeddings():
         st.session_state.docs = st.session_state.loader.load() # load documents of pdf
         st.session_state.text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200) 
         st.session_state.split_docs = st.session_state.text_splitter.split_documents(st.session_state.docs) # split documents into smaller chunks
-        st.session_state.db = FaissDB.from_documents(st.session_state.split_docs, st.session_state.embeddings) # create vector store
+        st.session_state.vectors = FAISS.from_documents(st.session_state.split_docs, st.session_state.embeddings) # create vector store
 
 st.title("RAG Document Q&A App")
 
@@ -50,17 +51,17 @@ if st.button('Document Embeddings'):
     st.write('Vector Database is ready')
 
 if user_input:
-    document_chain = create_stuff_document_chain(llm, prompt)
-    retriever = st.session_state.db.as_retriever()
-    retriever_chain = create_retrival_chain(retriever, document_chain)
+    document_chain = create_stuff_documents_chain(llm, prompt)
+    retriever = st.session_state.vectors.as_retriever()
+    retriever_chain = create_retrieval_chain(retriever, document_chain)
 
     start = time.process_time()
-    response = retriever_Chain.invoke({input: user_input})
+    response = retriever_chain.invoke({'input': user_input})
     print('response time: {time.process_time() - start}')
 
     st.write(response['answer'])
 
-    with st.expender('Document Similarity Search'):
+    with st.expander('Document Similarity Search'):
         for i, doc in enumerate(response['context']):
             st.write(doc.page_content)
             st.write('-----------------------------')

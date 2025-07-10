@@ -20,4 +20,5 @@ faiss-cpu # facebook ai sementic search
 langchain_chroma
 streamlit
 langchain_groq
+tf-keras
 
