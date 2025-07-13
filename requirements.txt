@@ -22,3 +22,5 @@ streamlit
 langchain_groq
 tf-keras
 
+wikipedia
+duckduckgo-search
