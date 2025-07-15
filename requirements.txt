@@ -24,3 +24,7 @@ tf-keras
 
 wikipedia
 duckduckgo-search
+validators
+youtube-transcript-api
+pytube
+unstructured
