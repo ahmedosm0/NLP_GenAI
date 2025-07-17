@@ -28,6 +28,11 @@ Before running the application, ensure you have:
 ```bash
 git clone https://github.com/ahmedosm0/NLP_GenAI.git
 
-## 📸 Demo
+2. Install dependencies:
+pip install -r requirements.txt
 
-./gen_ai_app_png
+3. Run the application with:
+streamlit run app.py
+
+## 📸 Demo
+![App Screenshot](gen_ai_app.png)
