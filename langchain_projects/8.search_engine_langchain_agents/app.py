@@ -26,7 +26,7 @@ api_key=st.sidebar.text_input("Enter your Groq API Key:",type="password")
 
 if "messages" not in st.session_state:
     st.session_state["messages"]=[
-        {"role":"assisstant","content":"Hi,I'm a chatbot who can search the web. How can I help you?"}
+        {"role":"assisstant","content":"Hi, How can I help you?"}
     ]
 
 for msg in st.session_state.messages:
