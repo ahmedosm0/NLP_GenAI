@@ -22,6 +22,9 @@ Before running the application, ensure you have:
 3. Gemma 3:1b model downloaded (run `ollama run gemma:3b` in terminal)
 4. LangSmith account for tracing (optional)
 
+## 📸 Demo
+![App Screenshot](https://github.com/ahmedosm0/NLP_GenAI/blob/master/langchain_projects/4.gen_ai_app/gen_ai_app.png)
+
 ## Installation
 
 1. Clone the repository:
