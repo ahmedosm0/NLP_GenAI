@@ -26,7 +26,7 @@ A **Streamlit** application that predicts the probability of a customer leaving 
 
 ## 📸 Demo
 
-![App Screenshot](./appp.png)
+![App Screenshot](./app.png)
 
 ---
 
