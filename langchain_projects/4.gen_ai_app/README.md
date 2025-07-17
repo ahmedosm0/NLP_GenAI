@@ -35,4 +35,4 @@ pip install -r requirements.txt
 streamlit run app.py
 
 ## 📸 Demo
-![App Screenshot](gen_ai_app.png)
+![App Screenshot](./gen_ai_app.png)
