@@ -60,6 +60,7 @@ An intelligent agent that uses multiple **search tools** (Wikipedia, Arxiv, Duck
 - Install [Ollama](https://ollama.com/) and run a model:
 ```bash
 ollama run llama3
+```bash
 
 ## 📸 Demo
 ![App Screenshot](./app.png)
@@ -75,3 +76,4 @@ pip install -r requirements.txt
 3. Run the application with:
 streamlit run app.py
 
+```bash
