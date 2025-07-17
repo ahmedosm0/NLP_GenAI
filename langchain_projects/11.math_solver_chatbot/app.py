@@ -8,14 +8,14 @@ from langchain.agents import Tool, initialize_agent
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 
 ## Set upi the Stramlit app
-st.set_page_config(page_title="Text To MAth Problem Solver And Data Serach Assistant",page_icon="🧮")
-st.title("Text To Math Problem Solver Uing Google Gemma 2")
+st.set_page_config(page_title="Text To Math Problem Solver And Data Serach Assistant",page_icon="🧮")
+st.title("Text To Math Problem Solver Using Google Gemma 2")
 
 groq_api_key=st.sidebar.text_input(label="Groq API Key",type="password")
 
 
 if not groq_api_key:
-    st.info("Please add your Groq APPI key to continue")
+    st.info("Please add your Groq API key to continue")
     st.stop()
 
 llm=ChatGroq(model="Gemma2-9b-It",groq_api_key=groq_api_key)
@@ -39,12 +39,13 @@ calculator=Tool(
     description="A tools for answering math related questions. Only input mathematical expression need to bed provided"
 )
 
-prompt="""
-Your a agent tasked for solving users mathemtical question. Logically arrive at the solution and provide a detailed explanation
-and display it point wise for the question below
-Question:{question}
+prompt = """
+You are a professional math problem solver. Your task is to solve the user's mathematical question by providing a clear, step-by-step solution along with a detailed explanation. Return the final answer at the end.
+
+Question: {question}
 Answer:
 """
+
 
 prompt_template=PromptTemplate(
     input_variables=["question"],
@@ -72,7 +73,7 @@ assistant_agent=initialize_agent(
 
 if "messages" not in st.session_state:
     st.session_state["messages"]=[
-        {"role":"assistant","content":"Hi, I'm a MAth chatbot who can answer all your maths questions"}
+        {"role":"assistant","content":"Hi, I'm a math chatbot, how can i help you?"}
     ]
 
 for msg in st.session_state.messages:
