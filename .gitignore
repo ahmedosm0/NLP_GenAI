@@ -5,3 +5,4 @@ datasets/
 faiss_index/
 chroma_db/
 .env
+ann_classification_project/logs/
