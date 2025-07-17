@@ -37,6 +37,4 @@ pip install -r requirements.txt
 3. Run the application with:
 streamlit run app.py
 
-## 📸 Demo
-![App Screenshot](https://github.com/ahmedosm0/NLP_GenAI/blob/master/langchain_projects/4.gen_ai_app/gen_ai_app.png)
 
