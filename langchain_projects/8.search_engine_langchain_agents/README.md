@@ -27,8 +27,7 @@ A Streamlit-based conversational AI app that integrates **Groq's LLM** with **La
 
 ![Demo Screenshot](./app.png)
 
-> 📝 Place your image at `./screenshots/agent_demo.png` or update the path accordingly.
-
+>
 ---
 
 ## 🛠️ Installation
@@ -36,7 +35,6 @@ A Streamlit-based conversational AI app that integrates **Groq's LLM** with **La
 ### 🔧 Prerequisites
 - Python 3.10+
 - [Groq API Key](https://console.groq.com/)
-- `.env` file with:
 
 ### 📦 Install dependencies
 ```bash
