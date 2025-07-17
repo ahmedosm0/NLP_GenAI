@@ -40,5 +40,5 @@ A Streamlit-based conversational AI app that integrates **Groq's LLM** with **La
 ```bash
 pip install -r requirements.txt
 
-streamlit run agent_chat.py
+streamlit run app.py
 
