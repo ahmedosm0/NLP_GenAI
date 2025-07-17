@@ -14,7 +14,7 @@ An enhanced generative AI chatbot using the `Gemma 3:1b` model through Ollama, p
 - ⚙️ Modular `generate_res()` function for flexible reuse
 - 🤖 Local inference using Ollama’s `gemma3:1b` model
 - ⛓️ LangChain integration for prompt chaining and parsing
-- 🔐 Environment-based configuration for LangSmith tracing (optional)
+- 🔐 Environment-based configuration for LangSmith tracing
 
 ---
 
