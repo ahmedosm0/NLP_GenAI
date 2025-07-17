@@ -38,5 +38,5 @@ pip install -r requirements.txt
 streamlit run app.py
 
 ## 📸 Demo
-![App Screenshot](https://raw.githubusercontent.com/ahmedosm0/NLP_GenAI/main/gen_ai_app.png)
+![App Screenshot](https://github.com/ahmedosm0/NLP_GenAI/blob/master/langchain_projects/4.gen_ai_app/gen_ai_app.png)
 
