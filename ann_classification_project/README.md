@@ -1,16 +1,18 @@
 # 🔮 Customer Churn Prediction App
 
-A **Streamlit** application that predicts the probability of a customer leaving a bank using a pre-trained **TensorFlow deep learning model**. Powered by historical customer behavior, the model analyzes demographics and account features to forecast churn risk.
+A full pipeline for predicting **bank customer churn** using a **deep learning model** built with **TensorFlow**. The project includes both a **model training notebook** and a **Streamlit web app** for real-time predictions. The model learns from customer data to forecast churn behavior using various account and demographic features.
 
 ---
 
 ## 🚀 Features
 
-- 📊 Takes customer details like geography, gender, age, credit score, and more
-- 🤖 Predicts **churn probability** using a trained neural network model
-- 📈 Displays a user-friendly **churn likelihood** output
-- ⚙️ Uses **label encoding**, **one-hot encoding**, and **scaling** for input transformation
-- 🧠 Model trained with **TensorFlow** and saved as `.h5`
+- 🔧 Train own model using historical customer data (`ann_main.ipynb`)
+- 🤖 Predicts churn probability in real time with a saved model
+- 📊 Accepts inputs like gender, age, credit score, geography, salary, etc.
+- 🧠 Encodes categorical variables with **LabelEncoder** and **OneHotEncoder**
+- 🔄 Scales features with **StandardScaler**
+- 💾 Saves all preprocessing tools and the trained model using `pickle` and `.h5` format
+- 🌐 Simple, fast UI using Streamlit
 
 ---
 
@@ -24,6 +26,34 @@ A **Streamlit** application that predicts the probability of a customer leaving 
 
 ---
 
+## 🧠 Model Training
+
+Model training is done in the file: **`ann_main.ipynb`**
+
+It includes:
+- Importing and preprocessing the dataset
+- Encoding:
+  - `LabelEncoder` for Gender
+  - `OneHotEncoder` for Geography
+- Feature Scaling using `StandardScaler`
+- Building an **Artificial Neural Network (ANN)** using `TensorFlow`
+- Evaluating and saving:
+  - Trained model (`model.h5`)
+  - Encoders (`label_encoder_gender.pkl`, `onehot_encoder.pkl`)
+  - Scaler (`scaler.pkl`)
+
+---
+
+## 🌐 Streamlit App
+
+The `app.py` file loads the saved model and preprocessing tools to:
+- Collect user input via form
+- Encode and scale input
+- Predict churn probability
+- Display results interactively
+
+---
+
 ## 📸 Demo
 
 ![App Screenshot](./app.png)
@@ -34,10 +64,10 @@ A **Streamlit** application that predicts the probability of a customer leaving 
 
 ### ✅ Prerequisites
 
-- Python 3.8+
-- TensorFlow (tested with v2.11+)
-- Pre-trained model file (`model.h5`)
-- Serialized encoders:
+- Python 3.10
+- TensorFlow (v2.11+ recommended)
+- All required files from training phase:
+  - `model.h5`
   - `label_encoder_gender.pkl`
   - `onehot_encoder.pkl`
   - `scaler.pkl`
@@ -46,4 +76,5 @@ A **Streamlit** application that predicts the probability of a customer leaving 
 
 ```bash
 pip install -r requirements.txt
+
 streamlit run app.py
